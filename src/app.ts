@@ -14,6 +14,7 @@ import adminRoutes from "./models/admin/admin.routes";
 import categoryRoutes from "./models/category/category.routes";
 import { setupSwagger } from "./config/swagger";
 import fileRoutes from './models/file/file.routes';
+import collaboratorRoutes from './models/collaborator/collaborator.routes';
 
 // Load environment variables
 dotenv.config();
@@ -48,6 +49,7 @@ app.use('/api/social', socialRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/file', fileRoutes);
+app.use('/api/collaborators', collaboratorRoutes);
 
 // Setup Swagger - Đặt sau tất cả các route khác
 setupSwagger(app);
