@@ -21,6 +21,10 @@ const options: swaggerJSDoc.Options = {
                 name: 'Files',
                 description: 'API quản lý file'
             },
+            {
+                name: 'Collaborators',
+                description: 'API quản lý cộng tác viên'
+            },
             // Các tags khác...
         ],
         components: {

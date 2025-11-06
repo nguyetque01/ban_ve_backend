@@ -5,11 +5,18 @@ export interface IUser extends Document {
     username: string;
     email: string;
     password: string;
-    role: 'user' | 'admin';
+    role: 'user' | 'collaborator' | 'admin';
     isActive: boolean;
+    bankAccount?: string;
+    bankName?: string;
+    commissionRate?: number;
+    isApproved?: boolean;
+    approvedAt?: Date;
+    approvedBy?: Schema.Types.ObjectId;
     createdAt: Date;
     updatedAt: Date;
     comparePassword(candidatePassword: string): Promise<boolean>;
+    isCollaborator(): boolean;
 }
 
 const userSchema = new Schema<IUser>({
@@ -36,8 +43,33 @@ const userSchema = new Schema<IUser>({
     },
     role: {
         type: String,
-        enum: ['user', 'admin'],
+        enum: ['user', 'collaborator', 'admin'],
         default: 'user'
+    },
+    bankAccount: {
+        type: String,
+        trim: true
+    },
+    bankName: {
+        type: String,
+        trim: true
+    },
+    commissionRate: {
+        type: Number,
+        min: 0,
+        max: 100,
+        default: 0
+    },
+    isApproved: {
+        type: Boolean,
+        default: false
+    },
+    approvedAt: {
+        type: Date
+    },
+    approvedBy: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
     },
     isActive: {
         type: Boolean,
@@ -68,7 +100,12 @@ userSchema.pre<IUser>('save', async function (next) {
 
 // Phương thức so sánh mật khẩu
 userSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
-    return bcrypt.compare(candidatePassword, this.password);
+    return await bcrypt.compare(candidatePassword, this.password);
+};
+
+// Phương thức kiểm tra có phải là cộng tác viên không
+userSchema.methods.isCollaborator = function (): boolean {
+    return this.role === 'collaborator' && this.isApproved === true;
 };
 
 export default model<IUser>('User', userSchema);
