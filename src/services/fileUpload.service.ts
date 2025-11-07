@@ -44,8 +44,11 @@ const storage = multer.diskStorage({
   filename: (req: Request, file: Express.Multer.File, cb) => {
     const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
     const ext = path.extname(file.originalname);
-    // Sử dụng 'file' thay vì file.fieldname để nhất quán
+    // Tạo tên file ngẫu nhiên để tránh xung đột
     cb(null, `file-${uniqueSuffix}${ext}`);
+    
+    // Lưu tên file gốc vào request để sử dụng nếu cần
+    (req as any).originalFileName = file.originalname;
   }
 });
 
