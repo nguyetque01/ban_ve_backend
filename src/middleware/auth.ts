@@ -39,3 +39,26 @@ export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
     }
     next();
 };
+
+export const isAdminOrCollaborator = (req: Request, res: Response, next: NextFunction) => {
+    if (!req.user) {
+        return res.status(401).json({ message: 'Vui lòng đăng nhập để tiếp tục' });
+    }
+    
+    if (req.user.role !== 'admin' && req.user.role !== 'collaborator') {
+        return res.status(403).json({ 
+            message: 'Chỉ admin và cộng tác viên mới có quyền thực hiện thao tác này',
+            status: 'error',
+            violations: [{
+                message: {
+                    vi: 'Chỉ admin và cộng tác viên mới có quyền thực hiện thao tác này',
+                    en: 'Only admin and collaborators can perform this action'
+                },
+                type: 'PermissionDenied',
+                code: 403
+            }]
+        });
+    }
+    
+    next();
+};

@@ -160,36 +160,45 @@ const options: swaggerJSDoc.Options = {
                     properties: {
                         _id: {
                             type: 'string',
-                            description: 'ID của file'
+                            description: 'ID của file',
+                            example: '60d5ec9f5824b70015f8e7a1'
                         },
                         name: {
                             type: 'string',
-                            description: 'Tên file'
+                            description: 'Tên gốc của file',
+                            example: 'hinh-anh-dep.jpg'
                         },
                         url: {
                             type: 'string',
-                            description: 'Đường dẫn đến file'
+                            description: 'Đường dẫn đầy đủ để truy cập file',
+                            format: 'uri',
+                            example: 'http://localhost:3000/uploads/images/file-1624567890123.jpg'
                         },
                         type: {
                             type: 'string',
                             enum: ['3D', 'PDF', 'PNG', 'JPG', 'JPEG', 'DWG', 'SKP', 'RVT', 'IFC', 'OTHER'],
-                            description: 'Loại file'
+                            description: 'Định dạng/loại file',
+                            example: 'JPG'
                         },
                         size: {
                             type: 'number',
-                            description: 'Kích thước file (bytes)'
+                            description: 'Kích thước file (tính bằng bytes)',
+                            example: 102400
                         },
                         createdAt: {
                             type: 'string',
                             format: 'date-time',
-                            description: 'Thời gian tạo'
+                            description: 'Thời điểm tạo bản ghi',
+                            example: '2023-01-01T00:00:00.000Z'
                         },
                         updatedAt: {
                             type: 'string',
                             format: 'date-time',
-                            description: 'Thời gian cập nhật'
+                            description: 'Thời điểm cập nhật lần cuối',
+                            example: '2023-01-01T00:00:00.000Z'
                         }
-                    }
+                    },
+                    required: ['name', 'url', 'type']
                 },
                 Stats: {
                     type: "object",
@@ -231,6 +240,25 @@ const options: swaggerJSDoc.Options = {
                             type: "string",
                             format: "date-time",
                             description: "Thời gian cập nhật cuối cùng"
+                        }
+                    }
+                },
+                FileUploadResponse: {
+                    type: 'object',
+                    properties: {
+                        success: { 
+                            type: 'boolean',
+                            example: true,
+                            description: 'Trạng thái thực hiện yêu cầu'
+                        },
+                        data: {
+                            $ref: '#/components/schemas/File',
+                            description: 'Thông tin file đã tải lên'
+                        },
+                        message: {
+                            type: 'string',
+                            example: 'Tải lên file thành công',
+                            description: 'Thông báo kết quả'
                         }
                     }
                 },

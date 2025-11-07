@@ -15,6 +15,7 @@ import categoryRoutes from "./models/category/category.routes";
 import { setupSwagger } from "./config/swagger";
 import fileRoutes from './models/file/file.routes';
 import collaboratorRoutes from './models/collaborator/collaborator.routes';
+import path from 'path';
 
 // Load environment variables
 dotenv.config();
@@ -33,6 +34,14 @@ app.use(cors({
 
 // Body parser
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Phục vụ file tĩnh từ thư mục uploads
+app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads'), {
+    setHeaders: (res) => {
+        res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+    }
+}));
 
 // Kết nối database
 connectDB();
