@@ -21,27 +21,45 @@ export const createFile = async (req: Request, res: Response) => {
 
         const { originalname, mimetype, size, filename } = req.file;
         
+        // Lấy phần đuôi file từ tên gốc
+        const fileExtension = path.extname(originalname);
+        const fileTypeFromExt = fileExtension.toUpperCase().slice(1);
+        
+        // Xác định tên file: ưu tiên lấy từ req.body.filename nếu có, không thì dùng originalname
+        const customName = req.body.filename?.trim();
+        // Nếu có custom name thì thêm đuôi file vào nếu chưa có
+        const displayName = customName 
+            ? customName + (customName.endsWith(fileExtension) ? '' : fileExtension)
+            : originalname;
+        
         // Xác định loại file dựa trên phần mở rộng
-        const fileExt = path.extname(originalname).toUpperCase().slice(1);
         const allowedTypes = ['3D', 'PDF', 'PNG', 'JPG', 'JPEG', 'DWG', 'SKP', 'RVT', 'IFC'];
-        const fileType = allowedTypes.includes(fileExt) ? fileExt : 'OTHER';
+        const fileType = allowedTypes.includes(fileTypeFromExt) ? fileTypeFromExt : 'OTHER';
 
         // Lưu đường dẫn tương đối của file (trực tiếp trong thư mục uploads)
         const filePath = `/uploads/${filename}`;
 
+        // Tạo đối tượng file mới
         const newFile = new File({
-            name: originalname,
-            path: filePath,  // Lưu đường dẫn tương đối
+            name: displayName,
+            path: filePath,
             type: fileType,
             size: size
         });
-
+        
+        // Lưu tên file gốc vào object để trả về
         const savedFile = await newFile.save();
+        
+        // Tạo response data với tên file đã được xử lý
+        const responseData = {
+            ...savedFile.toObject(),
+            name: displayName // Đảm bảo tên file trả về chính xác
+        };
 
         return createResponse(res, 201, {
             message: 'Tải lên file thành công',
             message_en: 'File uploaded successfully',
-            data: savedFile,
+            data: responseData,
             status: 'success'
         });
     } catch (error: unknown) {
