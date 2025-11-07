@@ -2,7 +2,7 @@ import { Schema, model, Document } from 'mongoose';
 
 export interface IFile extends Document {
     name: string;
-    url: string;
+    path: string;  // Đường dẫn tương đối
     type: string;
     size?: number;
     createdAt: Date;
@@ -16,7 +16,7 @@ const fileSchema = new Schema<IFile>(
             required: [true, 'Tên file là bắt buộc'],
             trim: true,
         },
-        url: {
+        path: {
             type: String,
             required: [true, 'Đường dẫn file là bắt buộc'],
             trim: true,
