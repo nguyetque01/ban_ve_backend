@@ -108,7 +108,11 @@ const router = express.Router();
  *       - in: query
  *         name: field
  *         schema: { type: string }
- *         description: Lọc theo lĩnh vực
+ *         description: Lọc theo lĩnh vực (slug của category)
+ *       - in: query
+ *         name: category_id
+ *         schema: { type: string }
+ *         description: Lọc theo ID của category
  *       - in: query
  *         name: file_type
  *         schema: { type: string }
